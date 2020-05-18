@@ -19,7 +19,7 @@ secondaryButton = document.getElementById("secondaryButton");
 // States
 let currentPomoState = POMO_STATE_POMODORO;
 let currentTime = POMO_STATE_POMODORO_TIME;
-let pomoRoundsRan = 4;
+let pomoRoundsRan = POMO_ROUNDS;
 let running = false; 
 
 let timerId = undefined;
@@ -31,25 +31,34 @@ primaryButton.onclick = function (){
 
     if (running){
         primaryButton.innerText = "Reset";
+        secondaryButton.innerText = "Pause";
         secondaryButton.disabled = false;
         
-        clearTimeout(timerId);
+        stepTime();
     } else {
         primaryButton.innerText = "Start";
-        secondaryButton.disabled = true;
 
-        stepTime();
+        clearTimeout(timerId);
+
+        // Reset to default
+        secondaryButton.innerText = "Pause";
+        secondaryButton.disabled = true;
+        currentPomoState = POMO_STATE_POMODORO;
+        currentTime = POMO_STATE_POMODORO_TIME;
+        pomoRoundsRan = POMO_ROUNDS;
+        intToMINSEC();
     }
 }
 
 secondaryButton.onclick = function (){
     console.log("Secondary Button");
+    running = !running;
     if (running){
         secondaryButton.innerText = "Pause";
-        clearTimeout(timerId);
+        stepTime();
     } else {
         secondaryButton.innerText = "Resume";
-        stepTime();
+        clearTimeout(timerId);
     }
 }
 
@@ -101,4 +110,8 @@ function notifyFinishedPeriod(){
 // Makes the style of minutes:seconds from seconds integer
 function intToMINSEC (){
     timeRemaining.innerText = `${Math.floor(currentTime / 60).toPrecision(2)}:${(currentTime % 60).toPrecision(2)}`;
+
+    // // To avoid e.g. 25:0.0 and make it 25:00
+    // if ("." in timeRemaining.innerText)
+    //     timeRemaining.innerText = `${Math.floor(currentTime / 60).toPrecision(2)}:00`;
 }
