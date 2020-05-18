@@ -14,8 +14,6 @@ timeRemaining = document.getElementById("timeRemaining");
 primaryButton = document.getElementById("primaryButton");
 secondaryButton = document.getElementById("secondaryButton");
 
-// 
-
 // States
 let currentPomoState = POMO_STATE_POMODORO;
 let currentTime = POMO_STATE_POMODORO_TIME;
@@ -23,6 +21,9 @@ let pomoRoundsRan = POMO_ROUNDS;
 let running = false; 
 
 let timerId = undefined;
+
+// Start point
+setDefaults();
 
 // On primary button
 primaryButton.onclick = function (){
@@ -60,6 +61,20 @@ secondaryButton.onclick = function (){
         secondaryButton.innerText = "Resume";
         clearTimeout(timerId);
     }
+}
+
+function setDefaults(){
+    primaryButton.innerText = "Start";
+
+    if (timerId !== undefined) clearTimeout(timerId);
+
+    secondaryButton.innerText = "Pause";
+    secondaryButton.disabled = true;
+
+    currentPomoState = POMO_STATE_POMODORO;
+    currentTime = POMO_STATE_POMODORO_TIME;
+    pomoRoundsRan = POMO_ROUNDS;
+    intToMINSEC();
 }
 
 // Work methods
@@ -109,9 +124,19 @@ function notifyFinishedPeriod(){
 // UTIL
 // Makes the style of minutes:seconds from seconds integer
 function intToMINSEC (){
-    timeRemaining.innerText = `${Math.floor(currentTime / 60).toPrecision(2)}:${(currentTime % 60).toPrecision(2)}`;
+    let minuteString = `${Math.floor(currentTime / 60).toPrecision(2)}`;
+    if (minuteString.includes("."))
+        minuteString = `0${Math.floor(currentTime / 60)}`;
 
-    // To avoid e.g. 25:0.0 and make it 25:00
-    if (timeRemaining.innerText.includes("."))
-        timeRemaining.innerText = `${Math.floor(currentTime / 60).toPrecision(2)}:00`;
+    let secondString = `${(currentTime % 60).toPrecision(2)}`;
+    if (secondString.includes("."))
+        secondString = `0${currentTime % 60}`;
+
+
+    // timeRemaining.innerText = `${Math.floor(currentTime / 60).toPrecision(2)}:${(currentTime % 60).toPrecision(2)}`;
+    timeRemaining.innerText = `${minuteString}:${secondString}`;
+
+    // // To avoid e.g. 25:0.0 and make it 25:00
+    // if (timeRemaining.innerText.includes("."))
+    //     timeRemaining.innerText = `${Math.floor(currentTime / 60).toPrecision(2)}:00`;
 }
