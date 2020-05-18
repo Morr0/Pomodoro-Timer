@@ -111,7 +111,7 @@ function notifyFinishedPeriod(){
 function intToMINSEC (){
     timeRemaining.innerText = `${Math.floor(currentTime / 60).toPrecision(2)}:${(currentTime % 60).toPrecision(2)}`;
 
-    // // To avoid e.g. 25:0.0 and make it 25:00
-    // if ("." in timeRemaining.innerText)
-    //     timeRemaining.innerText = `${Math.floor(currentTime / 60).toPrecision(2)}:00`;
+    // To avoid e.g. 25:0.0 and make it 25:00
+    if (timeRemaining.innerText.includes("."))
+        timeRemaining.innerText = `${Math.floor(currentTime / 60).toPrecision(2)}:00`;
 }
