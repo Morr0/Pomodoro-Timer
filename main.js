@@ -3,9 +3,12 @@ const POMO_STATE_POMODORO = "Pomodoro";
 const POMO_STATE_SHORT = "Short";
 const POMO_STATE_LONG = "Long";
 
-const POMO_STATE_POMODORO_TIME = 25 * 60;
-const POMO_STATE_SHORT_TIME = 5 * 60;
-const POMO_STATE_LONG_TIME = 15 * 60;
+// const POMO_STATE_POMODORO_TIME = 25 * 60;
+const POMO_STATE_POMODORO_TIME = 3;
+// const POMO_STATE_SHORT_TIME = 5 * 60;
+const POMO_STATE_SHORT_TIME = 2;
+// const POMO_STATE_LONG_TIME = 15 * 60;
+const POMO_STATE_LONG_TIME = 4;
 
 const POMO_ROUNDS = 4;
 
@@ -93,32 +96,30 @@ function stepTime(){
 
 // Called when the timer is done
 function notifyFinishedPeriod(){
-    pomoRoundsRan--;
     running = false;
 
     switch (currentPomoState){
-        default: case POMO_STATE_POMODORO:
-            if (pomoRoundsRan > 0){
-                currentPeriod.innerText = "Short Break";
-                currentPomoState = POMO_STATE_SHORT;
-                currentTime = POMO_STATE_SHORT_TIME;
-            } else {
-                currentPeriod.innerText = "Long Break";
-                currentPomoState = POMO_STATE_LONG;
-                currentTime = POMO_STATE_LONG_TIME;
-            }
+        case POMO_STATE_POMODORO:
+            setBreak(pomoRoundsRan > 0);
             break;
         case POMO_STATE_SHORT: case POMO_STATE_LONG:
             currentPeriod.innerText = "Pomodoro";
             currentPomoState = POMO_STATE_POMODORO;
             currentTime = POMO_STATE_POMODORO_TIME;
+            intToMINSEC();
+            primaryButton.innerText = "Continue";
             break; 
-        // case POMO_STATE_LONG:
-        //     currentPeriod.innerText = "Pomodoro";
-        //     currentPomoState = POMO_STATE_POMODORO;
-        //     currentTime = POMO_STATE_POMODORO_TIME;
-        //     break;
     }
+
+    pomoRoundsRan--;
+}
+
+function setBreak(short){
+    currentPeriod.innerText = short? "Short Break": "Long Break";
+    currentPomoState = short? POMO_STATE_SHORT: POMO_STATE_LONG;
+    currentTime = short? POMO_STATE_SHORT_TIME: POMO_STATE_LONG_TIME;
+    intToMINSEC();
+    primaryButton.innerText = "Break";
 }
 
 // UTIL
