@@ -32,6 +32,7 @@ setDefaults();
 primaryButton.onclick = function (){
     console.log(`Primary Button, running: ${running}`);
     running = !running;
+    console.log(pomoRoundsRan);
 
     if (running){
         primaryButton.innerText = "Reset";
@@ -100,9 +101,14 @@ function notifyFinishedPeriod(){
 
     switch (currentPomoState){
         case POMO_STATE_POMODORO:
-            setBreak(pomoRoundsRan > 0);
+            setBreak(pomoRoundsRan > 1);
             break;
         case POMO_STATE_SHORT: case POMO_STATE_LONG:
+            // Decrement rounds left only on short breaks
+            if (currentPomoState === POMO_STATE_SHORT) pomoRoundsRan--;
+            // Reset rounds left only long breaks
+            else pomoRoundsRan = POMO_ROUNDS;
+
             currentPeriod.innerText = "Pomodoro";
             currentPomoState = POMO_STATE_POMODORO;
             currentTime = POMO_STATE_POMODORO_TIME;
@@ -110,8 +116,6 @@ function notifyFinishedPeriod(){
             primaryButton.innerText = "Continue";
             break; 
     }
-
-    pomoRoundsRan--;
 }
 
 function setBreak(short){
